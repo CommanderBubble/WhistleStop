@@ -15,6 +15,9 @@ local function placeLoader(entity, xoffset, yoffset, type, direction)
 	local loader = entity.surface.create_entity{name="wsf-factory-loader", position={xposition, yposition}, force=entity.force, type=type, direction=direction_final}
 	if loader then
 		loader.destructible = false
+		loader.minable = false
+		loader.operable = false
+		loader.rotatable = false
 	else
 		debugWrite("Loader Spawn failed at " .. xposition .. "," .. yposition)
 	end
@@ -38,13 +41,13 @@ local function loadersForBigAssembly(entity)
 	local loaderlist = global.whistlestops[entity.unit_number].loaderlist
 
 	-- Left side loaders
-	for i=1,6 do
+	for i=2,7 do
 		table.insert(loaderlist, placeLoader(entity, -7.5, i, "input", 2))
 		table.insert(loaderlist, placeLoader(entity, -7.5, -i, "input", 2))
 	end
 
 	-- Right side loaders
-	for i=2,5 do
+	for i=2,7 do
 		table.insert(loaderlist, placeLoader(entity, 7.5, i, "output", 2))
 		table.insert(loaderlist, placeLoader(entity, 7.5, -i, "output", 2))
 	end
@@ -52,8 +55,10 @@ local function loadersForBigAssembly(entity)
 	for i=2,6 do
 		-- Bottom loaders
 		table.insert(loaderlist, placeLoader(entity, -i, 7.5, "input", 0))
+		table.insert(loaderlist, placeLoader(entity, i, 7.5, "input", 0))
 		-- Top loaders
 		table.insert(loaderlist, placeLoader(entity, -i, -7.5, "input", 4))
+		table.insert(loaderlist, placeLoader(entity, i, -7.5, "input", 4))
 	end
 end
 
