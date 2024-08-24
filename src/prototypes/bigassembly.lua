@@ -19,7 +19,7 @@ local function create_bigassembly(name, energy, speed)
 
     if bigassembly.energy_source and bigassembly.energy_source.emissions_per_minute then
         local prepollution = bigassembly.energy_source.emissions_per_minute
-        bigassembly.energy_source.emissions_per_minute = bigassembly.energy_source.emissions_per_minute * (speed / bigassembly.crafting_speed)
+        bigassembly.energy_source.emissions_per_minute = bigassembly.energy_source.emissions_per_minute * (speed / bigassembly.crafting_speed) * 5
         log("adjusted pollution of bigassembly from "..prepollution.." to "..bigassembly.energy_source.emissions_per_minute)
     end
     

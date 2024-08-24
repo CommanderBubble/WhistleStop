@@ -18,7 +18,7 @@ local function create_bigchemplant(name, energy, speed)
 
     if bigchemplant.energy_source and bigchemplant.energy_source.emissions_per_minute then
         local prepollution = bigchemplant.energy_source.emissions_per_minute
-        bigchemplant.energy_source.emissions_per_minute = bigchemplant.energy_source.emissions_per_minute * (speed / bigchemplant.crafting_speed)
+        bigchemplant.energy_source.emissions_per_minute = bigchemplant.energy_source.emissions_per_minute * (speed / bigchemplant.crafting_speed) * 5
         log("adjusted pollution of bigchemplant from "..prepollution.." to "..bigchemplant.energy_source.emissions_per_minute)
     end
 
