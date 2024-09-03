@@ -174,30 +174,27 @@ end
 local function recipeSetup()
     -- Cycles through recipes adding big version to recipe list
 
-    local cat_list1 = {}
-
-    if type(data.raw.furnace["electric-furnace"]) == "table" then
-        for k,v in pairs(data.raw.furnace["electric-furnace"]["crafting_categories"]) do
-            table.insert(cat_list1, v)
-        end
-    else
-        table.insert(cat_list1, "smelting")
-    end
-    table.insert(cat_list1, "chemical-furnace")  -- Support for Bobs chemical furnaces
-    table.insert(cat_list1, "mixing-furnace") -- Support for Bobs mixing furnaces
-    local cat_list2 = util.table.deepcopy(data.raw["assembling-machine"]["assembling-machine-3"]["crafting_categories"])
-    if settings.startup["whistle-centrifuge"].value then
-        table.insert(cat_list2, "centrifuging")
-    end
+    local cat_list1 = util.table.deepcopy(data.raw["assembling-machine"]["assembling-machine-3"]["crafting_categories"])
+    local cat_list2 = util.table.deepcopy(data.raw["assembling-machine"]["centrifuge"]["crafting_categories"])
     local cat_list3 = util.table.deepcopy(data.raw["assembling-machine"]["chemical-plant"]["crafting_categories"])
     table.insert(cat_list3, "electrolysis") -- Support for Bobs electrolysis
-    local cat_list4 = util.table.deepcopy(data.raw["assembling-machine"]["oil-refinery"]["crafting_categories"])
+    local cat_list4 = {}
+    if type(data.raw.furnace["electric-furnace"]) == "table" then
+        for k,v in pairs(data.raw.furnace["electric-furnace"]["crafting_categories"]) do
+            table.insert(cat_list4, v)
+        end
+    else
+        table.insert(cat_list4, "smelting")
+    end
+    table.insert(cat_list4, "chemical-furnace")  -- Support for Bobs chemical furnaces
+    table.insert(cat_list4, "mixing-furnace") -- Support for Bobs mixing furnaces
+    local cat_list5 = util.table.deepcopy(data.raw["assembling-machine"]["oil-refinery"]["crafting_categories"])
 
     for _, recipeBase in pairs(util.table.deepcopy(data.raw.recipe)) do
         if type(recipeBase) == "table" then
             
             local cat = recipeBase.category or "crafting" -- Blank recipes categories are considered "crafting"
-            if inlist(cat, cat_list1) or inlist(cat, cat_list2) or inlist(cat, cat_list3) or inlist(cat, cat_list4) then
+            if inlist(cat, cat_list1) or inlist(cat, cat_list2) or inlist(cat, cat_list3) or inlist(cat, cat_list4) or inlist(cat, cat_list5) then
                 recipe = util.table.deepcopy(recipeBase)
                 
                 -- Recipe is split into normal/expensive, one allowed to be blank
@@ -229,25 +226,27 @@ local function recipeSetup()
                 end
                 recipe.name = recipe.name .. "-big"
                 
-                -- Big furnace recipes
-                if inlist(cat, cat_list1) then
-                    recipe.category = "big-smelting"
-
                 -- Big assembly recipes
+                if inlist(cat, cat_list1) then
+                    recipe.category = "big-assembly"
+
+                -- Big centrifuge recipes
                 elseif inlist(cat, cat_list2) then
-                    recipe.category = "big-recipe"
-                
-                -- Chemical furnace recipes, but currently applied to big assembling machine
+                    recipe.category = "big-uranium"
+                    
+                -- Chemical furnace recipes
                 elseif inlist(cat, cat_list3) then
                     recipe.category = "big-chem"
 
-                -- Oil refinery recipes
+                -- Big furnace recipes
                 elseif inlist(cat, cat_list4) then
+                    recipe.category = "big-smelting"
+
+                -- Oil refinery recipes
+                elseif inlist(cat, cat_list5) then
                     recipe.category = "big-refinery"
                 end
 
-                
-                
                 data.raw.recipe[recipe.name] = recipe
             end
         end

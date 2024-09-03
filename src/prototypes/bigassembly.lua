@@ -23,7 +23,7 @@ local function create_bigassembly(name, energy, speed)
         log("adjusted pollution of bigassembly from "..prepollution.." to "..bigassembly.energy_source.emissions_per_minute)
     end
     
-    bigassembly.crafting_categories = {"big-recipe", "big-chem"}
+    bigassembly.crafting_categories = {"big-assembly"}
     bigassembly.crafting_speed = speed
 
     bigassembly.energy_usage = energy

@@ -15,5 +15,9 @@ local create_bigrefinery = require("__WhistleStopFactories__.prototypes.bigrefin
 create_bigrefinery("wsf-big-refinery", "36000kW", 18)
 
 -- Big Chemical Plant prototype and item definition
--- local create_bigchemplant = require("__WhistleStopFactories__.prototypes.bigchemplant")
--- create_bigchemplant("wsf-big-chemplant", "7200kW", 18)
+local create_bigchemplant = require("__WhistleStopFactories__.prototypes.bigchemplant")
+create_bigchemplant("wsf-big-chemplant", "36000kW", 18)
+
+ -- Big Centrifuge prototype and item definition
+local create_bigcentrifuge = require("__WhistleStopFactories__.prototypes.bigcentrifuge")
+create_bigcentrifuge("wsf-big-centrifuge", "36000kW", 18)

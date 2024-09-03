@@ -50,30 +50,28 @@ end
 
 function recipevalidation()
     log("Whistle Stop recipe check starts...")
-    local cat_list1 = util.table.deepcopy(game.entity_prototypes["electric-furnace"]["crafting_categories"])
-    cat_list1["chemical-furnace"] = true  -- Support for Bobs chemical furnaces
-    cat_list1["mixing-furnace"] = true -- Support for Bobs mixing furnaces
-    local cat_list2 = util.table.deepcopy(game.entity_prototypes["assembling-machine-3"]["crafting_categories"])
-    if settings.startup["whistle-centrifuge"].value then
-        cat_list2["centrifuging"] = true
-    end
+    local cat_list1 = util.table.deepcopy(game.entity_prototypes["assembling-machine-3"]["crafting_categories"])
+    local cat_list2 = util.table.deepcopy(game.entity_prototypes["centrifuge"]["crafting_categories"])
     local cat_list3 = util.table.deepcopy(game.entity_prototypes["chemical-plant"]["crafting_categories"])
     cat_list3["electrolysis"] = true -- Support for Bobs electrolysis
-    local cat_list4 = util.table.deepcopy(game.entity_prototypes["oil-refinery"]["crafting_categories"])
+    local cat_list4 = util.table.deepcopy(game.entity_prototypes["electric-furnace"]["crafting_categories"])
+    cat_list4["chemical-furnace"] = true -- Support for Bobs chemical furnaces
+    cat_list4["mixing-furnace"] = true -- Support for Bobs mixing furnaces
+    local cat_list5 = util.table.deepcopy(game.entity_prototypes["oil-refinery"]["crafting_categories"])
     
     local foundissue = false
     local prod2
     local ingr2
     for _, recipe in pairs(game.recipe_prototypes) do
         local cat = recipe.category
-        if inkey(cat, cat_list1) or inkey(cat, cat_list2) or inkey(cat, cat_list3) or inkey(cat, cat_list4) then
-            if not game.recipe_prototypes[recipe.name .. "-big"] or not inlist(game.recipe_prototypes[recipe.name .. "-big"].category, {"big-smelting", "big-recipe", "big-chem", "big-refinery"}) then
+        if inkey(cat, cat_list1) or inkey(cat, cat_list2) or inkey(cat, cat_list3) or inkey(cat, cat_list4) or inkey(cat, cat_list5) then
+            if not game.recipe_prototypes[recipe.name .. "-big"] or not inlist(game.recipe_prototypes[recipe.name .. "-big"].category, {"big-assembly", "big-uranium", "big-chem", "big-smelting", "big-refinery"}) then
                 log("No big recipe pair for " .. recipe.name)
                 foundissue = true
             end
-        elseif  inlist(cat, {"big-smelting", "big-recipe", "big-chem", "big-refinery"}) then
+        elseif inlist(cat, {"big-assembly", "big-uranium", "big-chem", "big-smelting", "big-refinery"}) then
             local small_recipe = game.recipe_prototypes[string.sub(recipe.name,1,-5)]
-            if not small_recipe or not (inkey(small_recipe.category, cat_list1) or inkey(small_recipe.category, cat_list2) or inkey(small_recipe.category, cat_list3) or inkey(small_recipe.category, cat_list4)) then
+            if not small_recipe or not (inkey(small_recipe.category, cat_list1) or inkey(small_recipe.category, cat_list2) or inkey(small_recipe.category, cat_list3) or inkey(small_recipe.category, cat_list4) or inkey(small_recipe.category, cat_list5)) then
                 log("No small recipe pair for " .. recipe.name)
                 foundissue = true
             else
@@ -142,16 +140,16 @@ function recipevalidation()
         end
     end
     if foundissue then
-        game.print("Whistle Stop recipe check found a issue with another mod.  See factorio-current.log for more information.")
+        game.print("Whistle Stop recipe check found a issue with another mod. See factorio-current.log for more information.")
         game.print("Please report to the Whistle Stop author here: https://mods.factorio.com/mod/WhistleStopFactories/discussion")
     else
-        log("Whistle Stop recipe check complete.  No issues found.")
+        log("Whistle Stop recipe check complete. No issues found.")
     end
 end
 
 script.on_event(defines.events.on_chunk_generated,
     function (event)
-        -- Probability adjusts based on previous success.  Will attempt more spawns if lots are being blocked by ore and water.
+        -- Probability adjusts based on previous success. Will attempt more spawns if lots are being blocked by ore and water.
         local prob = (20 + global.whistlestats.valid_chunk_count) / (10 + global.whistlestats["wsf-big-furnace"] + global.whistlestats["wsf-big-assembly"] + global.whistlestats["wsf-big-refinery"]) / 10
         if not probability(prob) then -- Initial probability filter to give the map a more random spread and reduce cpu work
             return
@@ -185,12 +183,12 @@ script.on_event(defines.events.on_chunk_generated,
 
             local success = spawn(center, event.surface, global.nextSpawnType)
             if success then
-                debugWrite("Creating " .. global.nextSpawnType .. " at (" .. center.x .. "," .. center.y .. ").  Counts = " .. serpent.line(global.whistlestats))
+                debugWrite("Creating " .. global.nextSpawnType .. " at (" .. center.x .. "," .. center.y .. "). Counts = " .. serpent.line(global.whistlestats))
                 addBuffer(center, event.surface.index)
                 global.whistlestats[global.nextSpawnType] = global.whistlestats[global.nextSpawnType] + 1
                 global.nextSpawnType = nil
             else
-                debugWrite("Failed creating " .. global.nextSpawnType .."  at (" .. center.x .. "," .. center.y .. ")")
+                debugWrite("Failed creating " .. global.nextSpawnType .." at (" .. center.x .. "," .. center.y .. ")")
             end
         end
     end
@@ -227,7 +225,7 @@ script.on_nth_tick(6*60,
         for k,v in pairs(global.whistlestops) do
             -- Removes loaders for any entities that were destroyed by other mods without triggering destroy_entity event
             if not v.entity.valid then
-                debugWrite("Factory not properly cleaned up at " .. v.position.x .. "," .. v.position.y .. ".  Cleaning now.")
+                debugWrite("Factory not properly cleaned up at " .. v.position.x .. "," .. v.position.y .. ". Cleaning now.")
                 on_destroy_event({entity={name=v.type, unit_number=k}})
             elseif settings.global["whistle-enable-tagging"].value then
                 -- Creates tag for entities that have a set recipe
@@ -291,7 +289,7 @@ script.on_event(defines.events.on_research_finished,
         for _, effect in pairs(event.research.effects) do
             if type(effect) == 'table' and effect.type == "unlock-recipe" then
                 if force.recipes[effect.recipe .. "-big"] and
-                        inlist(force.recipes[effect.recipe .. "-big"].category, {"big-smelting", "big-recipe", "big-chem", "big-refinery"})  then
+                        inlist(force.recipes[effect.recipe .. "-big"].category, {"big-assembly", "big-uranium", "big-chem", "big-smelting", "big-refinery"}) then
                     force.recipes[effect.recipe .. "-big"].enabled = true
                 end
             end

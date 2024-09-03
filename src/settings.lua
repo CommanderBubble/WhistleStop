@@ -51,7 +51,7 @@ data:extend({
             type = "bool-setting",
             name = "whistle-buildable",
             setting_type = "startup",
-            default_value = false,
-            order = "c",
+            default_value = true,
+            order = "d",
         },
 })

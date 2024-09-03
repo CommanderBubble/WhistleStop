@@ -16,5 +16,9 @@ require("__WhistleStopFactories__.scripts.tagIcons")
 local create_bigloader = require("__WhistleStopFactories__.prototypes.bigloader")
 create_bigloader("wsf-factory-loader")
 
+-- Add the recipes and technologies to the game
+require("__WhistleStopFactories__.prototypes.recipes")
+require("__WhistleStopFactories__.prototypes.technology")
+
 -- Update Loader speed to fastest available loaders or belts in current mod set
 require("__WhistleStopFactories__.scripts.updateLoaderSpeed")

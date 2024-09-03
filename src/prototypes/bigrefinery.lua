@@ -1,4 +1,4 @@
--- Big furnace prototype and item definition
+-- Big refinery prototype and item definition
 require("__WhistleStopFactories__.prototypes.adjustVisuals")
 require("util")
 

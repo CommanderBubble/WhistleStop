@@ -97,7 +97,7 @@ Updates.run = function()
         for _, force in pairs(game.forces) do
             for _, recipe in pairs(force.recipes) do
                 if string.sub(recipe.name, -4)=="-big"
-                    and inlist(recipe.category, {"big-smelting", "big-recipe", "big-chem", "big-refinery"}) 
+                    and inlist(recipe.category, {"big-assembly", "big-uranium", "big-chem", "big-smelting", "big-refinery"}) 
                     and force.recipes[string.sub(recipe.name,1,-5)]
                     and force.recipes[string.sub(recipe.name,1,-5)].enabled
                     and not force.recipes[string.sub(recipe.name,1,-5)].hidden then 
