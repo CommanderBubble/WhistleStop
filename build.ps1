@@ -32,5 +32,6 @@ if (!$NoPublish) {
     Copy-Item -Path "$SourceFolder" -Recurse -Destination "$newDir"
     ConvertTo-Json $buildInfo.info | ForEach-Object { [System.Text.RegularExpressions.Regex]::Unescape($_) } | Set-Content "$newDir\info.json" -Encoding UTF8
     Compress-Archive -LiteralPath "$newDir" -DestinationPath "$newDir.zip"
+    Copy-Item -Path "$newDir.zip" -Destination "$env:APPDATA\Factorio\mods"
 }
 
