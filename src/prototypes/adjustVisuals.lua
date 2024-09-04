@@ -39,8 +39,7 @@ function adjustVisuals(machine, scaleFactor, animationFactor)
     -- Animation Adjustments
     if type(machine.animation) == "table" then
         for _, direction in pairs({"north", "east", "south", "west"}) do
-            if type(machine.animation[direction]) == "table" and
-            type(machine.animation[direction].layers) == "table" then
+            if type(machine.animation[direction]) == "table" and type(machine.animation[direction].layers) == "table" then
                 for k,v in pairs(machine.animation[direction].layers) do
                     bumpFullAnimation(v, scaleFactor, animationFactor)
                 end
@@ -48,6 +47,21 @@ function adjustVisuals(machine, scaleFactor, animationFactor)
         end
         if type(machine.animation.layers) == "table" then
             for k,v in pairs(machine.animation.layers) do
+                bumpFullAnimation(v, scaleFactor, animationFactor)
+            end
+        end
+    end
+    -- Idle Animation Adjustments
+    if type(machine.idle_animation) == "table" then
+        for _, direction in pairs({"north", "east", "south", "west"}) do
+            if type(machine.idle_animation[direction]) == "table" and type(machine.idle_animation[direction].layers) == "table" then
+                for k,v in pairs(machine.idle_animation[direction].layers) do
+                    bumpFullAnimation(v, scaleFactor, animationFactor)
+                end
+            end
+        end
+        if type(machine.idle_animation.layers) == "table" then
+            for k,v in pairs(machine.idle_animation.layers) do
                 bumpFullAnimation(v, scaleFactor, animationFactor)
             end
         end
@@ -61,6 +75,11 @@ function adjustVisuals(machine, scaleFactor, animationFactor)
                     bumpFullAnimation(v[direction .. "_animation"], scaleFactor, animationFactor)
                     if type(v[direction .. "_position"]) == "table" then
                         v[direction .. "_position"] = scalePosition(v[direction .. "_position"], scaleFactor)
+                    end
+                end
+                if type(v.animation) == "table" and type(v.animation.layers) == "table" then
+                    for _, layer in pairs(v.animation.layers) do
+                        bumpFullAnimation(layer, scaleFactor, animationFactor)
                     end
                 end
             end
