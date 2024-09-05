@@ -5,6 +5,14 @@ require("util")
 commonAdjustments = require("__WhistleStopFactories__.prototypes.commonAdjustments")
 
 local function create_bigfurnace(name, energy, speed)
+    local bigfurnaceremnants = util.table.deepcopy(data.raw.corpse["electric-furnace-remnants"])
+
+    bigfurnaceremnants.name = name .. "-remnants"
+
+    adjustVisuals(bigfurnaceremnants, 5.4, 1/60)
+
+    data.raw.corpse[name .. "-remnants"] = bigfurnaceremnants
+
     local bigfurnace = util.table.deepcopy(data.raw.furnace["electric-furnace"])
     local icon = "__WhistleStopFactories__/graphics/icons/big-furnace.png"
 
@@ -16,6 +24,9 @@ local function create_bigfurnace(name, energy, speed)
     bigfurnace.collision_box = {{-8.1, -8.1}, {8.1, 8.1}}
     bigfurnace.selection_box = {{-8.8, -9}, {8.8, 9}}
     bigfurnace.drawing_box = {{-8.8, -8.8}, {8.8, 8.8}}
+    bigfurnaceremnants.collision_box = bigfurnace.collision_box
+    bigfurnaceremnants.selection_box = bigfurnace.selection_box
+    bigfurnaceremnants.drawing_box = bigfurnace.drawing_box
 
     if bigfurnace.energy_source and bigfurnace.energy_source.emissions_per_minute then
         local prepollution = bigfurnace.energy_source.emissions_per_minute

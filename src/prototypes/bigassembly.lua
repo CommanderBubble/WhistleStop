@@ -5,6 +5,14 @@ require("util")
 commonAdjustments = require("__WhistleStopFactories__.prototypes.commonAdjustments")
 
 local function create_bigassembly(name, energy, speed)
+    local bigassemblyremnants = util.table.deepcopy(data.raw.corpse["assembling-machine-3-remnants"])
+
+    bigassemblyremnants.name = name .. "-remnants"
+
+    adjustVisuals(bigassemblyremnants, 6, 1/32)
+
+    data.raw.corpse[name .. "-remnants"] = bigassemblyremnants
+
     local bigassembly = util.table.deepcopy(data.raw["assembling-machine"]["assembling-machine-3"])
     local icon = "__WhistleStopFactories__/graphics/icons/big-assembly.png"
 
@@ -16,6 +24,9 @@ local function create_bigassembly(name, energy, speed)
     bigassembly.collision_box = {{-8.1, -8.1}, {8.1, 8.1}}
     bigassembly.selection_box = {{-8.8, -9}, {8.8, 9}}
     bigassembly.drawing_box = {{-8.8, -8.8}, {8.8, 8.8}}
+    bigassemblyremnants.collision_box = bigassembly.collision_box
+    bigassemblyremnants.selection_box = bigassembly.selection_box
+    bigassemblyremnants.drawing_box = bigassembly.drawing_box
 
     if bigassembly.energy_source and bigassembly.energy_source.emissions_per_minute then
         local prepollution = bigassembly.energy_source.emissions_per_minute
@@ -50,21 +61,12 @@ local function create_bigassembly(name, energy, speed)
         return retvalue
     end
 
-    if name == "wsf-big-assembly-old" then
-        bigassembly.fluid_boxes = {
-            fluidBox("input", {1, -9}),
-            fluidBox("input", {-9, -1}),
-            fluidBox("output", {9, 1}),
-            fluidBox("output", {-1, 9}),
-        }
-    else
-        bigassembly.fluid_boxes = {
-            fluidBox("input", {0, -9}),
-            fluidBox("input", {-9, 0}),
-            fluidBox("output", {9, 0}),
-            fluidBox("output", {0, 9}),
-        }
-    end
+    bigassembly.fluid_boxes = {
+        fluidBox("input", {0, -9}),
+        fluidBox("input", {-9, 0}),
+        fluidBox("output", {9, 0}),
+        fluidBox("output", {0, 9}),
+    }
 
     adjustVisuals(bigassembly, 6, 1/32)
 

@@ -7,7 +7,6 @@ create_bigfurnace("wsf-big-furnace", "40000kW", 100)
 local create_bigassembly = require("__WhistleStopFactories__.prototypes.bigassembly")
 -- name, energy_consumption, crafting_speed
 create_bigassembly("wsf-big-assembly", "30000kW", 40)
-create_bigassembly("wsf-big-assembly-old", "30000kW", 40)
 
 -- Big Refinery prototype and item definition
 local create_bigrefinery = require("__WhistleStopFactories__.prototypes.bigrefinery")

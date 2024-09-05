@@ -5,6 +5,14 @@ require("util")
 commonAdjustments = require("__WhistleStopFactories__.prototypes.commonAdjustments")
 
 local function create_bigcentrifuge(name, energy, speed)
+    local bigcentrifugeremnants = util.table.deepcopy(data.raw.corpse["centrifuge-remnants"])
+
+    bigcentrifugeremnants.name = name .. "-remnants"
+
+    adjustVisuals(bigcentrifugeremnants, 5, 1/20)
+
+    data.raw.corpse[name .. "-remnants"] = bigcentrifugeremnants
+
     local bigcentrifuge = util.table.deepcopy(data.raw["assembling-machine"]["centrifuge"])
     -- local icon = "__WhistleStopFactories__/graphics/icons/big-assembly.png"
 
@@ -15,6 +23,9 @@ local function create_bigcentrifuge(name, energy, speed)
     bigcentrifuge.collision_box = {{-8.1, -8.1}, {8.1, 8.1}}
     bigcentrifuge.selection_box = {{-8.8, -9}, {8.8, 9}}
     bigcentrifuge.drawing_box = {{-8.8, -8.8}, {8.8, 8.8}}
+    bigcentrifugeremnants.collision_box = bigcentrifuge.collision_box
+    bigcentrifugeremnants.selection_box = bigcentrifuge.drawiselection_boxng_box
+    bigcentrifugeremnants.drawing_box = bigcentrifuge.drawing_box
 
     if bigcentrifuge.energy_source and bigcentrifuge.energy_source.emissions_per_minute then
         local prepollution = bigcentrifuge.energy_source.emissions_per_minute

@@ -5,6 +5,14 @@ require("util")
 commonAdjustments = require("__WhistleStopFactories__.prototypes.commonAdjustments")
 
 local function create_bigrefinery(name, energy, speed)
+    local bigrefineryremnants = util.table.deepcopy(data.raw.corpse["oil-refinery-remnants"])
+
+    bigrefineryremnants.name = name .. "-remnants"
+
+    adjustVisuals(bigrefineryremnants, 5.8, 1/20)
+
+    data.raw.corpse[name .. "-remnants"] = bigrefineryremnants
+
     local bigrefinery = util.table.deepcopy(data.raw["assembling-machine"]["oil-refinery"])
 
     bigrefinery.name = name
@@ -14,6 +22,9 @@ local function create_bigrefinery(name, energy, speed)
     bigrefinery.collision_box = {{-14.5, -14.5}, {14.5, 14.5}}
     bigrefinery.selection_box = {{-15, -15}, {15, 15}}
     bigrefinery.drawing_box = {{-15, -15.3}, {15, 15}}
+    bigrefineryremnants.collision_box = bigrefinery.collision_box
+    bigrefineryremnants.selection_box = bigrefinery.selection_box
+    bigrefineryremnants.drawing_box = bigrefinery.drawing_box
 
     if bigrefinery.energy_source and bigrefinery.energy_source.emissions_per_minute then
         local prepollution = bigrefinery.energy_source.emissions_per_minute

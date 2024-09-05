@@ -40,13 +40,19 @@ function adjustVisuals(machine, scaleFactor, animationFactor)
     if type(machine.animation) == "table" then
         for _, direction in pairs({"north", "east", "south", "west"}) do
             if type(machine.animation[direction]) == "table" and type(machine.animation[direction].layers) == "table" then
-                for k,v in pairs(machine.animation[direction].layers) do
+                for _, v in pairs(machine.animation[direction].layers) do
                     bumpFullAnimation(v, scaleFactor, animationFactor)
                 end
             end
         end
         if type(machine.animation.layers) == "table" then
-            for k,v in pairs(machine.animation.layers) do
+            for _, v in pairs(machine.animation.layers) do
+                bumpFullAnimation(v, scaleFactor, animationFactor)
+            end
+        end
+        
+        if machine.type == "corpse" then
+            for _, v in pairs(machine.animation) do
                 bumpFullAnimation(v, scaleFactor, animationFactor)
             end
         end
@@ -55,20 +61,25 @@ function adjustVisuals(machine, scaleFactor, animationFactor)
     if type(machine.idle_animation) == "table" then
         for _, direction in pairs({"north", "east", "south", "west"}) do
             if type(machine.idle_animation[direction]) == "table" and type(machine.idle_animation[direction].layers) == "table" then
-                for k,v in pairs(machine.idle_animation[direction].layers) do
+                for _, v in pairs(machine.idle_animation[direction].layers) do
                     bumpFullAnimation(v, scaleFactor, animationFactor)
                 end
             end
         end
         if type(machine.idle_animation.layers) == "table" then
-            for k,v in pairs(machine.idle_animation.layers) do
+            for _, v in pairs(machine.idle_animation.layers) do
                 bumpFullAnimation(v, scaleFactor, animationFactor)
             end
         end
     end
+    -- Tile Adjustments
+    if machine.type == "corpse" then
+        machine.tile_width = machine.tile_width * scaleFactor
+        machine.tile_height = machine.tile_height * scaleFactor
+    end
     -- Working Visualisations Adjustments
     if type(machine.working_visualisations) == "table" then
-        for k,v in pairs(machine.working_visualisations) do
+        for _, v in pairs(machine.working_visualisations) do
             if type(v) == "table" then
                 bumpFullAnimation(v.animation, scaleFactor, animationFactor)
                 for _, direction in pairs({"north", "east", "south", "west"}) do

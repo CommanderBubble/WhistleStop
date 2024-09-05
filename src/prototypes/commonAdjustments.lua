@@ -3,7 +3,7 @@ local function commonAdjustments(factory)
     factory.next_upgrade = nil
     factory.fast_replaceable_group = nil
     factory.dying_explosion = "big-explosion"
-    factory.max_health = 1600
+    factory.max_health = 10000
 
     factory.scale_entity_info_icon = true
 
@@ -13,6 +13,8 @@ local function commonAdjustments(factory)
         "placeable-player",
         "player-creation"
     }
+
+    factory.corpse = factory.name .. "-remnants"
 
     factory.minable.result = factory.name
 

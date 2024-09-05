@@ -5,6 +5,14 @@ require("util")
 commonAdjustments = require("__WhistleStopFactories__.prototypes.commonAdjustments")
 
 local function create_bigchemplant(name, energy, speed)
+    local bigchemplantremnants = util.table.deepcopy(data.raw.corpse["chemical-plant-remnants"])
+
+    bigchemplantremnants.name = name .. "-remnants"
+
+    adjustVisuals(bigchemplantremnants, 5, 1/20)
+
+    data.raw.corpse[name .. "-remnants"] = bigchemplantremnants
+
     local bigchemplant = util.table.deepcopy(data.raw["assembling-machine"]["chemical-plant"])
     -- local icon = "__WhistleStopFactories__/graphics/icons/big-assembly.png"
 
@@ -15,6 +23,9 @@ local function create_bigchemplant(name, energy, speed)
     bigchemplant.collision_box = {{-8.1, -8.1}, {8.1, 8.1}}
     bigchemplant.selection_box = {{-8.8, -9}, {8.8, 9}}
     bigchemplant.drawing_box = {{-8.8, -8.8}, {8.8, 8.8}}
+    bigchemplantremnants.collision_box = bigchemplant.collision_box
+    bigchemplantremnants.selection_box = bigchemplant.selection_box
+    bigchemplantremnants.drawing_box = bigchemplant.drawing_box
 
     if bigchemplant.energy_source and bigchemplant.energy_source.emissions_per_minute then
         local prepollution = bigchemplant.energy_source.emissions_per_minute
