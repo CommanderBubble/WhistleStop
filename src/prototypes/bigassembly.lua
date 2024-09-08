@@ -77,7 +77,7 @@ local function create_bigassembly(name, energy, speed)
     bigassembly_item.name = name
     bigassembly_item.icon = icon
     bigassembly_item.icon_size = 32
-    bigassembly_item.order = "c[" .. name .. "]"
+    bigassembly_item.order = bigassembly_item.order .. "-big"
     bigassembly_item.place_result = name
 
     data.raw.item[name] = bigassembly_item

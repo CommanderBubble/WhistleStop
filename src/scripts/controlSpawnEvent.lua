@@ -113,15 +113,17 @@ local function placeAllLoaders(entity)
 end
 
 local function destroyLoaders(unit_number)
-    for k,v in pairs(global.whistlestops[unit_number].loaderlist) do
-        v.destroy()
+    if type(global.whistlestops[unit_number]) ~= "nil" then
+        for k,v in pairs(global.whistlestops[unit_number].loaderlist) do
+            v.destroy()
+        end
+        global.whistlestops[unit_number].loaderlist = {}
     end
-    global.whistlestops[unit_number].loaderlist = {}
 end
 
 script.on_event(defines.events.on_player_rotated_entity,
     function (event)
-        if inlist(event.entity.name, {"wsf-big-assembly", "wsf-big-centrigure", "wsf-big-chemplant", "wsf-big-furnace", "wsf-big-refinery"}) then
+        if inlist(event.entity.name, {"wsf-big-assembly", "wsf-big-centrifuge", "wsf-big-chemplant", "wsf-big-furnace", "wsf-big-refinery"}) then
             destroyLoaders(event.entity.unit_number)
             if settings.global["whistle-use-loaders"].value then
                 placeAllLoaders(event.entity)
@@ -131,7 +133,7 @@ script.on_event(defines.events.on_player_rotated_entity,
 )
 
 function on_built_event(entity)
-    if type(entity) ~= "table" or not inlist(entity.name, {"wsf-big-assembly", "wsf-big-centrigure", "wsf-big-chemplant", "wsf-big-furnace", "wsf-big-refinery"}) then
+    if type(entity) ~= "table" or not inlist(entity.name, {"wsf-big-assembly", "wsf-big-centrifuge", "wsf-big-chemplant", "wsf-big-furnace", "wsf-big-refinery"}) then
         return
     end
 
@@ -171,7 +173,7 @@ script.on_event(
 
 -- Destroying leftover loaders
 function on_destroy_event(entity)
-    if type(entity) == "table" and inlist(entity.name, {"wsf-big-assembly", "wsf-big-centrigure", "wsf-big-chemplant", "wsf-big-furnace", "wsf-big-refinery"}) then
+    if type(entity) == "table" and inlist(entity.name, {"wsf-big-assembly", "wsf-big-centrifuge", "wsf-big-chemplant", "wsf-big-furnace", "wsf-big-refinery"}) then
         destroyLoaders(entity.unit_number)
         global.whistlestops[entity.unit_number] = nil
     end    

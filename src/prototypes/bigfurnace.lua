@@ -79,7 +79,7 @@ local function create_bigfurnace(name, energy, speed)
     bigfurnace_item.name = name
     bigfurnace_item.icon = icon
     bigfurnace_item.icon_size = 32
-    bigfurnace_item.order = "d[" .. name .. "]"
+    bigfurnace_item.order = bigfurnace_item.order .. "-big"
     bigfurnace_item.place_result = name
 
     data.raw.item[name] = bigfurnace_item

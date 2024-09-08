@@ -68,7 +68,7 @@ local function create_bigcentrifuge(name, energy, speed)
 
     bigcentrifuge_item.name = name
     -- bigcentrifuge_item.icon = icon
-    bigcentrifuge_item.order = "c[" .. name .. "]"
+    bigcentrifuge_item.order = bigcentrifuge_item.order .. "-big"
     bigcentrifuge_item.place_result = name
 
     data.raw.item[name] = bigcentrifuge_item

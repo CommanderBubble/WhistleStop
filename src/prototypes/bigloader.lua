@@ -15,14 +15,14 @@ local function create_bigloader(name)
 
     data.raw["loader"][name] = bigloader
 
-    local bigrefinery_item = util.table.deepcopy(data.raw.item["express-loader"])
+    local bigloader_item = util.table.deepcopy(data.raw.item["express-loader"])
 
-    bigrefinery_item.name = name
-    -- bigrefinery_item.icon = icon
-    bigrefinery_item.order = "d[loader]-c[" .. name .."]"
-    bigrefinery_item.place_result = name
+    bigloader_item.name = name
+    -- bigloader_item.icon = icon
+    bigloader_item.order = "d[loader]-c[" .. name .."]"
+    bigloader_item.place_result = name
 
-    data.raw.item[name] = bigrefinery_item
+    data.raw.item[name] = bigloader_item
 end
 
 return create_bigloader

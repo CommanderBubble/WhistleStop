@@ -72,7 +72,7 @@ local function create_bigrefinery(name, energy, speed)
 
     bigrefinery_item.name = name
     -- bigrefinery_item.icon = icon
-    bigrefinery_item.order = "c[" .. name .. "]"
+    bigrefinery_item.order = bigrefinery_item.order .. "-big"
     bigrefinery_item.place_result = name
 
     data.raw.item[name] = bigrefinery_item

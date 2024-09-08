@@ -76,7 +76,7 @@ local function create_bigchemplant(name, energy, speed)
 
     bigchemplant_item.name = name
     -- bigchemplant_item.icon = icon
-    bigchemplant_item.order = "c[" .. name .. "]"
+    bigchemplant_item.order = bigchemplant_item.order .. "-big"
     bigchemplant_item.place_result = name
 
     data.raw.item[name] = bigchemplant_item
