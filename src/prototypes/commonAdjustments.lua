@@ -1,24 +1,18 @@
 local function commonAdjustments(factory)
-
-    factory.next_upgrade = nil
-    factory.fast_replaceable_group = nil
-    factory.dying_explosion = "big-explosion"
-    factory.max_health = 10000
-
-    factory.scale_entity_info_icon = true
-
+    factory.collision_mask = factory.collision_mask or {"item-layer", "object-layer", "player-layer", "water-tile"}
+    factory.corpse = factory.name .. "-remnants"
     factory.create_ghost_on_death = true
+    factory.dying_explosion = factory.name .. "-explosion"
+    factory.fast_replaceable_group = nil
     factory.flags = {
         "placeable-neutral",
         "placeable-player",
         "player-creation"
     }
-
-    factory.corpse = factory.name .. "-remnants"
-
+    factory.has_backer_name = nil
+    factory.max_health = 10000
     factory.minable.result = factory.name
-
-    factory.collision_mask = factory.collision_mask or {"item-layer", "object-layer", "player-layer", "water-tile"}
+    factory.next_upgrade = nil
     factory.resistances = {
         {
             type="poison",
@@ -26,7 +20,8 @@ local function commonAdjustments(factory)
         },
         {
             type="acid",
-            percent=80},
+            percent=80
+        },
         {
             type="physical",
             percent=70
@@ -40,8 +35,7 @@ local function commonAdjustments(factory)
             percent=-100
         }
     }
-
-    factory.has_backer_name = nil
+    factory.scale_entity_info_icon = true
 end
 
 return commonAdjustments

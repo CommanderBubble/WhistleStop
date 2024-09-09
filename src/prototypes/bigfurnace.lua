@@ -5,15 +5,41 @@ require("util")
 commonAdjustments = require("__WhistleStopFactories__.prototypes.commonAdjustments")
 
 local function create_bigfurnace(name, energy, speed)
-    local bigfurnaceremnants = util.table.deepcopy(data.raw.corpse["electric-furnace-remnants"])
+    local collision_box = {{-8.1, -8.1}, {8.1, 8.1}}
+    local selection_box = {{-8.8, -9}, {8.8, 9}}
+    local drawing_box = {{-8.8, -8.8}, {8.8, 8.8}}
 
-    bigfurnaceremnants.name = name .. "-remnants"
-
-    adjustVisuals(bigfurnaceremnants, 5.4, 1/60)
-
-    data.raw.corpse[name .. "-remnants"] = bigfurnaceremnants
-
+    -- Base objects
     local bigfurnace = util.table.deepcopy(data.raw.furnace["electric-furnace"])
+    local bigfurnace_corpse = util.table.deepcopy(data.raw.corpse["electric-furnace-remnants"])
+    local bigfurnace_explosion = util.table.deepcopy(data.raw.explosion["electric-furnace-explosion"])
+    local bigfurnace_item = util.table.deepcopy(data.raw.item["electric-furnace"])
+
+    -- Corpse
+    bigfurnace_corpse.name = name .. "-remnants"
+    bigfurnace_corpse.order = bigfurnace_corpse.order .. "-wsf"
+
+    adjustVisuals(bigfurnace_corpse, 5.4, 1)
+
+    bigfurnace_corpse.collision_box = collision_box
+    bigfurnace_corpse.selection_box = selection_box
+    bigfurnace_corpse.drawing_box = drawing_box
+
+    data.raw.corpse[name .. "-remnants"] = bigfurnace_corpse
+
+    -- Explosion
+    bigfurnace_explosion.name = name .. "-explosion"
+    bigfurnace_explosion.order = bigfurnace_explosion.order .. "-wsf"
+
+    adjustVisuals(bigfurnace_explosion, 5.4, 1)
+
+    bigfurnace_explosion.collision_box = collision_box
+    bigfurnace_explosion.selection_box = selection_box
+    bigfurnace_explosion.drawing_box = drawing_box
+    
+    data.raw.explosion[name .. "-explosion"] = bigfurnace_explosion
+
+    -- Entity
     local icon = "__WhistleStopFactories__/graphics/icons/big-furnace.png"
 
     bigfurnace.name = name
@@ -21,16 +47,13 @@ local function create_bigfurnace(name, energy, speed)
     bigfurnace.icon_size = 32
     bigfurnace.localised_name = {"entity-name.wsf-big-furnace"}
 
-    bigfurnace.collision_box = {{-8.1, -8.1}, {8.1, 8.1}}
-    bigfurnace.selection_box = {{-8.8, -9}, {8.8, 9}}
-    bigfurnace.drawing_box = {{-8.8, -8.8}, {8.8, 8.8}}
-    bigfurnaceremnants.collision_box = bigfurnace.collision_box
-    bigfurnaceremnants.selection_box = bigfurnace.selection_box
-    bigfurnaceremnants.drawing_box = bigfurnace.drawing_box
+    bigfurnace.collision_box = collision_box
+    bigfurnace.selection_box = selection_box
+    bigfurnace.drawing_box = drawing_box
 
     if bigfurnace.energy_source and bigfurnace.energy_source.emissions_per_minute then
         local prepollution = bigfurnace.energy_source.emissions_per_minute
-        bigfurnace.energy_source.emissions_per_minute = bigfurnace.energy_source.emissions_per_minute * (speed / bigfurnace.crafting_speed) * 5
+        bigfurnace.energy_source.emissions_per_minute = prepollution * (speed / bigfurnace.crafting_speed) * 5
         log("adjusted pollution of bigfurnace from "..prepollution.." to "..bigfurnace.energy_source.emissions_per_minute)
     end
 
@@ -74,17 +97,15 @@ local function create_bigfurnace(name, energy, speed)
 
     data.raw["assembling-machine"][name] = bigfurnace
 
-    local bigfurnace_item = util.table.deepcopy(data.raw.item["electric-furnace"])
-
+    -- Item
     bigfurnace_item.name = name
     bigfurnace_item.icon = icon
     bigfurnace_item.icon_size = 32
     bigfurnace_item.order = bigfurnace_item.order .. "-big"
     bigfurnace_item.place_result = name
+    bigfurnace_item.stack_size = 5
 
     data.raw.item[name] = bigfurnace_item
-    -- log(serpent.line(bigfurnace))
-    -- log(serpent.line(bigfurnace_item))
 end
 
 return create_bigfurnace

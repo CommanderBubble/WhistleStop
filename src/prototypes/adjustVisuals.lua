@@ -15,11 +15,13 @@ local function bumpUp(animation, scaleFactor, animationFactor)
     if type(animation) ~= "table" then
         return
     end
+
     if type(animation.shift) == "table" then
         animation.shift = scalePosition(animation.shift, scaleFactor)
     end
-
-    animation.scale = (animation.scale or 1) * scaleFactor
+    if type(animation.scale) ~= "nil" then
+        animation.scale = (animation.scale or 1) * scaleFactor
+    end
     if type(animation.frame_count) == "number" and animation.frame_count > 1 then
         animation.animation_speed = (animation.animation_speed or 1) * animationFactor
     end
@@ -32,64 +34,65 @@ local function bumpFullAnimation(animation, scaleFactor, animationFactor)
     end
 end
 
+local function bumpAnimationSet(animation_set, scaleFactor, animationFactor)
+    for _, direction in pairs({"north", "east", "south", "west"}) do
+        if type(animation_set[direction]) == "table" and type(animation_set[direction].layers) == "table" then
+            for _, layer in pairs(animation_set[direction].layers) do
+                bumpFullAnimation(layer, scaleFactor, animationFactor)
+            end
+        end
+    end
+    if type(animation_set.layers) == "table" then
+        for _, layer in pairs(animation_set.layers) do
+            bumpFullAnimation(layer, scaleFactor, animationFactor)
+        end
+    end
+
+    for k, v in pairs(animation_set) do
+        bumpFullAnimation(v, scaleFactor, animationFactor)
+    end
+end
+
 function adjustVisuals(machine, scaleFactor, animationFactor)
     if type(machine) ~= "table" then
         return
     end
+
     -- Animation Adjustments
     if type(machine.animation) == "table" then
-        for _, direction in pairs({"north", "east", "south", "west"}) do
-            if type(machine.animation[direction]) == "table" and type(machine.animation[direction].layers) == "table" then
-                for _, v in pairs(machine.animation[direction].layers) do
-                    bumpFullAnimation(v, scaleFactor, animationFactor)
-                end
-            end
-        end
-        if type(machine.animation.layers) == "table" then
-            for _, v in pairs(machine.animation.layers) do
-                bumpFullAnimation(v, scaleFactor, animationFactor)
-            end
-        end
-        
-        if machine.type == "corpse" then
-            for _, v in pairs(machine.animation) do
-                bumpFullAnimation(v, scaleFactor, animationFactor)
-            end
-        end
+        bumpAnimationSet(machine.animation, scaleFactor, animationFactor)
     end
+
+    if type(machine.animations) == "table" then
+        bumpAnimationSet(machine.animations, scaleFactor, animationFactor)
+    end
+
     -- Idle Animation Adjustments
     if type(machine.idle_animation) == "table" then
-        for _, direction in pairs({"north", "east", "south", "west"}) do
-            if type(machine.idle_animation[direction]) == "table" and type(machine.idle_animation[direction].layers) == "table" then
-                for _, v in pairs(machine.idle_animation[direction].layers) do
-                    bumpFullAnimation(v, scaleFactor, animationFactor)
-                end
-            end
-        end
-        if type(machine.idle_animation.layers) == "table" then
-            for _, v in pairs(machine.idle_animation.layers) do
-                bumpFullAnimation(v, scaleFactor, animationFactor)
-            end
-        end
+        bumpAnimationSet(machine.idle_animation, scaleFactor, animationFactor)
     end
+
     -- Tile Adjustments
-    if machine.type == "corpse" then
-        machine.tile_width = machine.tile_width * scaleFactor
+    if type(machine.tile_height) ~= "nil" then
         machine.tile_height = machine.tile_height * scaleFactor
     end
+    if type(machine.tile_width) ~= "nil" then
+        machine.tile_width = machine.tile_width * scaleFactor
+    end
+
     -- Working Visualisations Adjustments
     if type(machine.working_visualisations) == "table" then
-        for _, v in pairs(machine.working_visualisations) do
-            if type(v) == "table" then
-                bumpFullAnimation(v.animation, scaleFactor, animationFactor)
+        for _, visualisation in pairs(machine.working_visualisations) do
+            if type(visualisation) == "table" then
+                bumpFullAnimation(visualisation.animation, scaleFactor, animationFactor)
                 for _, direction in pairs({"north", "east", "south", "west"}) do
-                    bumpFullAnimation(v[direction .. "_animation"], scaleFactor, animationFactor)
-                    if type(v[direction .. "_position"]) == "table" then
-                        v[direction .. "_position"] = scalePosition(v[direction .. "_position"], scaleFactor)
+                    bumpFullAnimation(visualisation[direction .. "_animation"], scaleFactor, animationFactor)
+                    if type(visualisation[direction .. "_position"]) == "table" then
+                        visualisation[direction .. "_position"] = scalePosition(visualisation[direction .. "_position"], scaleFactor)
                     end
                 end
-                if type(v.animation) == "table" and type(v.animation.layers) == "table" then
-                    for _, layer in pairs(v.animation.layers) do
+                if type(visualisation.animation) == "table" and type(visualisation.animation.layers) == "table" then
+                    for _, layer in pairs(visualisation.animation.layers) do
                         bumpFullAnimation(layer, scaleFactor, animationFactor)
                     end
                 end

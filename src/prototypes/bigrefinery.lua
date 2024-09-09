@@ -5,30 +5,53 @@ require("util")
 commonAdjustments = require("__WhistleStopFactories__.prototypes.commonAdjustments")
 
 local function create_bigrefinery(name, energy, speed)
-    local bigrefineryremnants = util.table.deepcopy(data.raw.corpse["oil-refinery-remnants"])
+    local collision_box = {{-14.5, -14.5}, {14.5, 14.5}}
+    local selection_box = {{-15, -15}, {15, 15}}
+    local drawing_box = {{-15, -15.3}, {15, 15}}
 
-    bigrefineryremnants.name = name .. "-remnants"
-
-    adjustVisuals(bigrefineryremnants, 5.8, 1/20)
-
-    data.raw.corpse[name .. "-remnants"] = bigrefineryremnants
-
+    -- Base objects
     local bigrefinery = util.table.deepcopy(data.raw["assembling-machine"]["oil-refinery"])
+    local bigrefinery_corpse = util.table.deepcopy(data.raw.corpse["oil-refinery-remnants"])
+    local bigrefinery_explosion = util.table.deepcopy(data.raw.explosion["oil-refinery-explosion"])
+    local bigrefinery_item = util.table.deepcopy(data.raw.item["oil-refinery"])
 
+    -- Corpse
+    bigrefinery_corpse.name = name .. "-remnants"
+    bigrefinery_corpse.order = bigrefinery_corpse.order .. "-wsf"
+
+    adjustVisuals(bigrefinery_corpse, 5.8, 1)
+
+    bigrefinery_corpse.collision_box = collision_box
+    bigrefinery_corpse.selection_box = selection_box
+    bigrefinery_corpse.drawing_box = drawing_box
+
+    data.raw.corpse[name .. "-remnants"] = bigrefinery_corpse
+
+    -- Explosion
+    bigrefinery_explosion.name = name .. "-explosion"
+    bigrefinery_explosion.order = bigrefinery_explosion.order .. "-wsf"
+
+    adjustVisuals(bigrefinery_explosion, 5.8, 1)
+
+    bigrefinery_explosion.collision_box = collision_box
+    bigrefinery_explosion.selection_box = selection_box
+    bigrefinery_explosion.drawing_box = drawing_box
+    
+    data.raw.explosion[name .. "-explosion"] = bigrefinery_explosion
+
+    -- Entity
     bigrefinery.name = name
     -- bigrefinery.icon = "__WhistleStopFactories__/graphics/icons/big-furnace.png"
+
     bigrefinery.localised_name = {"entity-name.wsf-big-refinery"}
 
-    bigrefinery.collision_box = {{-14.5, -14.5}, {14.5, 14.5}}
-    bigrefinery.selection_box = {{-15, -15}, {15, 15}}
-    bigrefinery.drawing_box = {{-15, -15.3}, {15, 15}}
-    bigrefineryremnants.collision_box = bigrefinery.collision_box
-    bigrefineryremnants.selection_box = bigrefinery.selection_box
-    bigrefineryremnants.drawing_box = bigrefinery.drawing_box
+    bigrefinery.collision_box = collision_box
+    bigrefinery.selection_box = selection_box
+    bigrefinery.drawing_box = drawing_box
 
     if bigrefinery.energy_source and bigrefinery.energy_source.emissions_per_minute then
         local prepollution = bigrefinery.energy_source.emissions_per_minute
-        bigrefinery.energy_source.emissions_per_minute = bigrefinery.energy_source.emissions_per_minute * (speed / bigrefinery.crafting_speed) * 5
+        bigrefinery.energy_source.emissions_per_minute = prepollution * (speed / bigrefinery.crafting_speed) * 5
         log("adjusted pollution of bigrefinery from "..prepollution.." to "..bigrefinery.energy_source.emissions_per_minute)
     end
 
@@ -68,12 +91,12 @@ local function create_bigrefinery(name, energy, speed)
 
     data.raw["assembling-machine"][name] = bigrefinery
 
-    local bigrefinery_item = util.table.deepcopy(data.raw.item["oil-refinery"])
-
+    -- Item
     bigrefinery_item.name = name
     -- bigrefinery_item.icon = icon
     bigrefinery_item.order = bigrefinery_item.order .. "-big"
     bigrefinery_item.place_result = name
+    bigrefinery_item.stack_size = 5
 
     data.raw.item[name] = bigrefinery_item
 end

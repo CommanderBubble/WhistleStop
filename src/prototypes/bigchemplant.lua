@@ -5,31 +5,54 @@ require("util")
 commonAdjustments = require("__WhistleStopFactories__.prototypes.commonAdjustments")
 
 local function create_bigchemplant(name, energy, speed)
-    local bigchemplantremnants = util.table.deepcopy(data.raw.corpse["chemical-plant-remnants"])
+    local collision_box = {{-8.1, -8.1}, {8.1, 8.1}}
+    local selection_box = {{-8.8, -9}, {8.8, 9}}
+    local drawing_box = {{-8.8, -8.8}, {8.8, 8.8}}
 
-    bigchemplantremnants.name = name .. "-remnants"
-
-    adjustVisuals(bigchemplantremnants, 5, 1/20)
-
-    data.raw.corpse[name .. "-remnants"] = bigchemplantremnants
-
+    -- Base objects
     local bigchemplant = util.table.deepcopy(data.raw["assembling-machine"]["chemical-plant"])
-    -- local icon = "__WhistleStopFactories__/graphics/icons/big-assembly.png"
+    local bigchemplant_corpse = util.table.deepcopy(data.raw.corpse["chemical-plant-remnants"])
+    local bigchemplant_explosion = util.table.deepcopy(data.raw.explosion["chemical-plant-explosion"])
+    local bigchemplant_item = util.table.deepcopy(data.raw.item["chemical-plant"])
+
+    -- Corpse
+    bigchemplant_corpse.name = name .. "-remnants"
+    bigchemplant_corpse.order = bigchemplant_corpse.order .. "-wsf"
+
+    adjustVisuals(bigchemplant_corpse, 5, 1)
+
+    bigchemplant_corpse.collision_box = collision_box
+    bigchemplant_corpse.selection_box = selection_box
+    bigchemplant_corpse.drawing_box = drawing_box
+
+    data.raw.corpse[name .. "-remnants"] = bigchemplant_corpse
+
+    -- Explosion
+    bigchemplant_explosion.name = name .. "-explosion"
+    bigchemplant_explosion.order = bigchemplant_explosion.order .. "-wsf"
+
+    adjustVisuals(bigchemplant_explosion, 5, 1)
+
+    bigchemplant_explosion.collision_box = collision_box
+    bigchemplant_explosion.selection_box = selection_box
+    bigchemplant_explosion.drawing_box = drawing_box
+    
+    data.raw.explosion[name .. "-explosion"] = bigchemplant_explosion
+
+    -- Entity
+    -- local icon = "__WhistleStopFactories__/graphics/icons/big-chemplant.png"
 
     bigchemplant.name = name
     -- bigchemplant.icon = icon
     bigchemplant.localised_name = {"entity-name.wsf-big-chemplant"}
 
-    bigchemplant.collision_box = {{-8.1, -8.1}, {8.1, 8.1}}
-    bigchemplant.selection_box = {{-8.8, -9}, {8.8, 9}}
-    bigchemplant.drawing_box = {{-8.8, -8.8}, {8.8, 8.8}}
-    bigchemplantremnants.collision_box = bigchemplant.collision_box
-    bigchemplantremnants.selection_box = bigchemplant.selection_box
-    bigchemplantremnants.drawing_box = bigchemplant.drawing_box
+    bigchemplant.collision_box = collision_box
+    bigchemplant.selection_box = selection_box
+    bigchemplant.drawing_box = drawing_box
 
     if bigchemplant.energy_source and bigchemplant.energy_source.emissions_per_minute then
         local prepollution = bigchemplant.energy_source.emissions_per_minute
-        bigchemplant.energy_source.emissions_per_minute = bigchemplant.energy_source.emissions_per_minute * (speed / bigchemplant.crafting_speed) * 5
+        bigchemplant.energy_source.emissions_per_minute = prepollution * (speed / bigchemplant.crafting_speed) * 5
         log("adjusted pollution of bigchemplant from "..prepollution.." to "..bigchemplant.energy_source.emissions_per_minute)
     end
 
@@ -72,12 +95,12 @@ local function create_bigchemplant(name, energy, speed)
 
     data.raw["assembling-machine"][name] = bigchemplant
 
-    local bigchemplant_item = util.table.deepcopy(data.raw.item["chemical-plant"])
-
+    -- Item
     bigchemplant_item.name = name
     -- bigchemplant_item.icon = icon
     bigchemplant_item.order = bigchemplant_item.order .. "-big"
     bigchemplant_item.place_result = name
+    bigchemplant_item.stack_size = 5
 
     data.raw.item[name] = bigchemplant_item
 end
