@@ -1,16 +1,7 @@
 --serpent = require("serpent")
 
--- Provides spawn function which checks for valid spawn location and requests spawning
-require("__WhistleStopFactories__.scripts.spawnFactory")
-
 -- Handles big machine spawn events with its loaders
 require("__WhistleStopFactories__.scripts.controlSpawnEvent")
-
--- Lists points used to determine if a new factory is far enough away from previous factories
-require("__WhistleStopFactories__.scripts.bufferPoints")
-
--- Selects next spawn type using probability distribution
-chooseNextSpawnType = require("__WhistleStopFactories__.scripts.chooseNextSpawnType")
 
 -- Contains migration function for game and global variables
 local Updates = require("__WhistleStopFactories__.updates")
@@ -147,79 +138,6 @@ function recipevalidation()
     end
 end
 
-script.on_event(defines.events.on_chunk_generated,
-    function (event)
-        -- Probability adjusts based on previous success. Will attempt more spawns if lots are being blocked by ore and water.
-        local prob = (20 + global.whistlestats.valid_chunk_count) / (10 + global.whistlestats["wsf-big-furnace"] + global.whistlestats["wsf-big-assembly"] + global.whistlestats["wsf-big-refinery"]) / 10
-        if not probability(prob) then -- Initial probability filter to give the map a more random spread and reduce cpu work
-            return
-        end
-        
-        -- Chunk center
-        local center = {
-            x=(event.area.left_top.x+event.area.right_bottom.x)/2,
-            y=(event.area.left_top.y+event.area.right_bottom.y)/2}
-
-        if not distanceOkay(center, event.surface.index) then -- too close to other big structure
-            return
-        end
-
-        global.whistlestats.valid_chunk_count = global.whistlestats.valid_chunk_count + 1
-
-        if not global.nextSpawnType then -- Keeps trying the same spawn type until successful
-            global.nextSpawnType = chooseNextSpawnType()
-        end
-        if global.nextSpawnType == "buffer" then
-            debugWrite("Creating buffer point at (" .. center.x .. "," .. center.y .. ")")
-            addBuffer(center, event.surface.index)
-            global.whistlestats.buffer = global.whistlestats.buffer + 1
-            global.nextSpawnType = nil
-        else
-            if global.nextSpawnType ~= "wsf-big-refinery" then
-                -- Move center for smaller buildings, so that it won't always be in the exact center of chunks
-                -- Still making sure not to cross the edge of the chunk
-                center = {x=center.x - 1 + math.random(-3,4)*2, y=center.y - 1 + math.random(-3,4)*2}
-            end
-
-            local success = spawn(center, event.surface, global.nextSpawnType)
-            if success then
-                debugWrite("Creating " .. global.nextSpawnType .. " at (" .. center.x .. "," .. center.y .. "). Counts = " .. serpent.line(global.whistlestats))
-                addBuffer(center, event.surface.index)
-                global.whistlestats[global.nextSpawnType] = global.whistlestats[global.nextSpawnType] + 1
-                global.nextSpawnType = nil
-            else
-                debugWrite("Failed creating " .. global.nextSpawnType .." at (" .. center.x .. "," .. center.y .. ")")
-            end
-        end
-    end
-)
-
-script.on_init(
-    function ()
-        math.randomseed(game.surfaces[1].map_gen_settings.seed) --set the random seed to the map seed, so ruins are the same-ish with each generation.
-    
-        -- Tracks location of big factory and or buffer locations, starting with a buffer location at spawn
-        global.bufferpoints = {}
-        addBuffer({x=0, y=0}, 1, 1)
-        global.whistlestops = {}
-        -- Specification:
-            -- position=center
-            -- type=entityname
-            -- entity=entity
-            -- surface=surface
-            -- direction=entity.direction (used to compare to see if updated)
-            -- recipe=current recipe name (used to compare to see if updated)
-            -- tag=tag_number
-
-        -- Stat Tracking
-        global.whistlestats = {buffer=0, ["wsf-big-furnace"]=0, ["wsf-big-assembly"]=0, ["wsf-big-refinery"]=0, ["wsf-big-chemplant"]=0, valid_chunk_count=0}
-
-        Updates.init()
-
-        recipevalidation()
-    end
-)
-
 script.on_nth_tick(6*60, 
     function (event)
         for k,v in pairs(global.whistlestops) do
@@ -264,21 +182,7 @@ script.on_nth_tick(6*60,
 script.on_configuration_changed(
     function (configData)
         Updates.run()
-
         recipevalidation()
-        
-    end
-)
-
-script.on_event(defines.events.on_runtime_mod_setting_changed,
-    function (event)
-        if event.setting == "whistle-indestructible" then
-            for k,v in pairs(global.whistlestops) do
-                if v.entity.valid then
-                    v.entity.destructible = not settings.global["whistle-indestructible"].value
-                end
-            end
-        end
     end
 )
 

@@ -2,6 +2,7 @@ data:extend({
     {
         type = "recipe",
         name = "wsf-big-assembler",
+        category = "advanced-crafting",
         enabled = false,
         ingredients = {
             {
@@ -25,6 +26,7 @@ data:extend({
     {
         type = "recipe",
         name = "wsf-big-centrifuge",
+        category = "advanced-crafting",
         enabled = false,
         ingredients = {
             {
@@ -48,6 +50,7 @@ data:extend({
     {
         type = "recipe",
         name = "wsf-big-chemplant",
+        category = "advanced-crafting",
         enabled = false,
         ingredients = {
             {
@@ -71,6 +74,7 @@ data:extend({
     {
         type = "recipe",
         name = "wsf-big-furnace",
+        category = "advanced-crafting",
         enabled = false,
         ingredients = {
             {
@@ -96,6 +100,7 @@ data:extend({
     {
         type = "recipe",
         name = "wsf-big-refinery",
+        category = "advanced-crafting",
         enabled = false,
         ingredients = {
             {

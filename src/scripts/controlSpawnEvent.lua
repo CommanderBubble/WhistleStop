@@ -1,5 +1,3 @@
---serpent = require("serpent")
-
 require("__WhistleStopFactories__.scripts.luaMacros")
 
 -- Placing/Destroying events and loader placement
@@ -125,9 +123,7 @@ script.on_event(defines.events.on_player_rotated_entity,
     function (event)
         if inlist(event.entity.name, {"wsf-big-assembly", "wsf-big-centrifuge", "wsf-big-chemplant", "wsf-big-furnace", "wsf-big-refinery"}) then
             destroyLoaders(event.entity.unit_number)
-            if settings.global["whistle-use-loaders"].value then
-                placeAllLoaders(event.entity)
-            end
+            placeAllLoaders(event.entity)
         end
     end
 )
@@ -137,14 +133,9 @@ function on_built_event(entity)
         return
     end
 
-    global.whistlestops[entity.unit_number] = {position=entity.position, type=entity.name, entity=entity, surface=entity.surface, direction=entity.direction,
-        recipe=nil, tag=nil, loaderlist={}}
+    global.whistlestops[entity.unit_number] = {position=entity.position, type=entity.name, entity=entity, surface=entity.surface, direction=entity.direction, recipe=nil, tag=nil, loaderlist={}}
 
-    if settings.global["whistle-use-loaders"].value then
-        placeAllLoaders(entity)
-    end
-
-    entity.destructible = not settings.global["whistle-indestructible"].value
+    placeAllLoaders(entity)
 end
 
 script.on_event(
