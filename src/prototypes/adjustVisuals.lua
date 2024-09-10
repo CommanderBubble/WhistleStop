@@ -48,8 +48,8 @@ local function bumpAnimationSet(animation_set, scaleFactor, animationFactor)
         end
     end
 
-    for k, v in pairs(animation_set) do
-        bumpFullAnimation(v, scaleFactor, animationFactor)
+    for _, value in pairs(animation_set) do
+        bumpFullAnimation(value, scaleFactor, animationFactor)
     end
 end
 

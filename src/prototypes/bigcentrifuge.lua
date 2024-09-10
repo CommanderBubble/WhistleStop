@@ -53,7 +53,6 @@ local function create_bigcentrifuge(name, energy, speed)
     if bigcentrifuge.energy_source and bigcentrifuge.energy_source.emissions_per_minute then
         local prepollution = bigcentrifuge.energy_source.emissions_per_minute
         bigcentrifuge.energy_source.emissions_per_minute = prepollution * (speed / bigcentrifuge.crafting_speed) * 5
-        log("adjusted pollution of bigcentrifuge from "..prepollution.." to "..bigcentrifuge.energy_source.emissions_per_minute)
     end
 
     bigcentrifuge.crafting_categories = {"big-uranium"}
