@@ -9,9 +9,13 @@ local function create_bigloader(name)
     bigloader.minable = {hardness = 0, minable = false, mining_time = 0}
     bigloader.next_upgrade = nil
     bigloader.fast_replaceable_group = nil
+    bigloader.destructible = false
 
     bigloader.create_ghost_on_death = false
-    bigloader.flags = {"placeable-neutral", "placeable-player", "player-creation", "not-deconstructable", "not-blueprintable"}
+    bigloader.flags = {"placeable-player", "player-creation", "not-deconstructable", "not-blueprintable", "not-rotatable", "hidden", "hide-alt-info", "not-upgradable", "not-selectable-in-game", "no-copy-paste", "not-repairable"}
+
+    bigloader.collision_mask = {"transport-belt-layer"}
+    bigloader.structure_render_layer = "lower-object"
 
     data.raw["loader"][name] = bigloader
 
