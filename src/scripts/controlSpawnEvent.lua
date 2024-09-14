@@ -153,7 +153,8 @@ script.on_event(
 script.on_event(
     {
         defines.events.script_raised_built,
-        defines.events.script_raised_revive
+        defines.events.script_raised_revive,
+        defines.events.on_cancelled_deconstruction
     },
     function (event)
         if type(event) == "table" then
@@ -175,7 +176,8 @@ script.on_event(
         defines.events.on_entity_died,
         defines.events.on_player_mined_entity,
         defines.events.on_robot_mined_entity,
-        defines.events.script_raised_destroy
+        defines.events.script_raised_destroy,
+        defines.events.on_marked_for_deconstruction
     },
     function (event)
         if type(event) == "table" then
